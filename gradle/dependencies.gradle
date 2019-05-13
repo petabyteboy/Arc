@@ -9,6 +9,7 @@ versions.moe = "1.4.0"
 versions.gwt = "2.8.1"
 versions.gwtPlugin = "1.0.6"
 versions.lwjgl3 = "3.2.2"
+versions.lwjgl = "2.9.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
@@ -17,6 +18,13 @@ versions.androidSdk = 28
 versions.androidBuildTools = "28.0.3"
 versions.androidSupport = "25.+"
 versions.javaparser = "2.3.0"
+
+libraries.lwjgl2 = [
+    "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
+    "org.lwjgl.lwjgl:lwjgl_util:${versions.lwjgl}",
+    "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
+    "org.jcraft:jorbis:${versions.jorbis}"
+]
 
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
