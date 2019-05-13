@@ -5,7 +5,7 @@ import io.anuke.arc.files.FileHandle;
 
 public class OS{
     public static boolean isWindows = getPropertyNotNull("os.name").contains("Windows");
-    public static boolean isLinux = getPropertyNotNull("os.name").contains("Linux");
+    public static boolean isLinux = getPropertyNotNull("os.name").contains("Linux") || getPropertyNotNull("os.name").contains("Unix");
     public static boolean isMac = getPropertyNotNull("os.name").contains("Mac");
     public static boolean isIos = false;
     public static boolean isAndroid = false;
