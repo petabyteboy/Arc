@@ -308,6 +308,17 @@ public class Color{
         return set(Mathf.random(), Mathf.random(), Mathf.random(), 1f);
     }
 
+    public Color randHue(){
+        fromHsv(Mathf.random(360f), 1f, 1f);
+        a = 1f;
+        return this;
+    }
+
+    /** Shorthand for {@link #rgba8888(Color)}.*/
+    public int rgba(){
+        return Color.rgba8888(this);
+    }
+
     /**
      * Sets this color to the given color.
      * @param color the Color
@@ -432,6 +443,11 @@ public class Color{
         return this;
     }
 
+    /** Returns the sum of the RGB values of this color.*/
+    public float sum(){
+        return r + g + b;
+    }
+
     /**
      * Adds the given color component values to this Color's values.
      * @param r Red component
@@ -490,6 +506,14 @@ public class Color{
         this.g -= g;
         this.b -= b;
         return clamp();
+    }
+
+    /** Inverts this color's RGB.*/
+    public Color inv(){
+        r = 1f - r;
+        g = 1f - g;
+        b = 1f - b;
+        return this;
     }
 
     /**

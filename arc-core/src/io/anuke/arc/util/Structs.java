@@ -2,9 +2,7 @@ package io.anuke.arc.util;
 
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Function;
-import io.anuke.arc.function.Predicate;
+import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
 
 import java.util.Comparator;
@@ -34,6 +32,24 @@ public class Structs{
         return null;
     }
 
+    public static <T> int indexOf(T[] array, T value){
+        for(int i = 0; i < array.length; i++){
+            if(array[i] == value){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static <T> int indexOf(T[] array, Predicate<T> value){
+        for(int i = 0; i < array.length; i++){
+            if(value.test(array[i])){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static <T> T[] filter(Class<T> type, T[] array, Predicate<T> value){
         Array<T> out = new Array<>(true, array.length, type);
         for(T t : array){
@@ -48,6 +64,14 @@ public class Structs{
 
     public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor){
         return (c1, c2) -> keyExtractor.get(c1).compareTo(keyExtractor.get(c2));
+    }
+
+    public static <T> Comparator<T> comparingFloat(FloatFunction<? super T> keyExtractor){
+        return (c1, c2) -> Float.compare(keyExtractor.get(c1), keyExtractor.get(c2));
+    }
+
+    public static <T> Comparator<T> comparingInt(IntFunction<? super T> keyExtractor){
+        return (c1, c2) -> Integer.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
 
     public static <T> void each(Consumer<T> cons, T... objects){
@@ -72,11 +96,11 @@ public class Structs{
         return result;
     }
 
-    public static <T> T findMin(T[] arr, Function<T, Integer> proc){
+    public static <T> T findMin(T[] arr, FloatFunction<T> proc){
         T result = null;
-        int min = Integer.MAX_VALUE;
+        float min = Float.MAX_VALUE;
         for(T t : arr){
-            int val = proc.get(t);
+            float val = proc.get(t);
             if(val <= min){
                 result = t;
                 min = val;

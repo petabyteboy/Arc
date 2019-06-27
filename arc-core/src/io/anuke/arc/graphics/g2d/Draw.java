@@ -9,6 +9,8 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Tmp;
 
+import static io.anuke.arc.Core.camera;
+
 public class Draw{
     private static Color[] carr = new Color[3];
     public static float scl = 1f;
@@ -54,6 +56,10 @@ public class Draw{
         Core.batch.setColor(color.r, color.g, color.b, Core.batch.getColor().a);
     }
 
+    public static void colorMul(Color color, float mul){
+        color(color.r * mul, color.g * mul, color.b * mul, 1f);
+    }
+
     public static void color(Color color){
         Core.batch.setColor(color);
     }
@@ -79,7 +85,7 @@ public class Draw{
     }
 
     public static void color(){
-        Core.batch.setColor(Color.WHITE);
+        Core.batch.setPackedColor(Color.WHITE_FLOAT_BITS);
     }
 
     public static void color(float r, float g, float b){
@@ -120,6 +126,20 @@ public class Draw{
 
     public static void drawable(String name, float x, float y, float w, float h){
         Core.scene.skin.getDrawable(name).draw(x, y, w, h);
+    }
+
+    public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){
+        float ww = worldWidth * tilesize, wh = worldHeight * tilesize;
+        float x = camera.position.x + tilesize / 2f, y = camera.position.y + tilesize / 2f;
+        float u = (x - camera.width / 2f) / ww,
+        v = (y - camera.height / 2f) / wh,
+        u2 = (x + camera.width / 2f) / ww,
+        v2 = (y + camera.height / 2f) / wh;
+
+        Tmp.tr1.set(texture);
+        Tmp.tr1.set(u, v2, u2, v);
+
+        Draw.rect(Tmp.tr1, camera.position.x, camera.position.y, camera.width, camera.height);
     }
 
     public static void rect(String region, float x, float y, float w, float h){

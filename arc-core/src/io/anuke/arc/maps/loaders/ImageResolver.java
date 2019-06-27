@@ -1,4 +1,4 @@
-package io.anuke.arc.maps;
+package io.anuke.arc.maps.loaders;
 
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.ObjectMap;
@@ -12,8 +12,7 @@ import io.anuke.arc.graphics.g2d.TextureRegion;
  */
 public interface ImageResolver{
     /**
-     * @return the Texture for the given image name or null.
-     */
+     * @return the Texture for the given image name or null.*/
     TextureRegion getImage(String name);
 
     class DirectImageResolver implements ImageResolver{

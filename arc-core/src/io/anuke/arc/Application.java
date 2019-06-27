@@ -1,6 +1,7 @@
 package io.anuke.arc;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.graphics.g2d.Fill;
 import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Disposable;
 
@@ -46,7 +47,6 @@ public interface Application extends Disposable{
      * <p><code>
      * final Graphics graphics = Gdx.graphics;
      */
-    //TODO move to timer task since posting things isn't really app specific and could run in an update()... somewhere
     void post(Runnable runnable);
 
     /**
@@ -79,6 +79,7 @@ public interface Application extends Disposable{
             Core.batch = null;
         }
 
+        Fill.dispose();
         Events.dispose();
     }
 

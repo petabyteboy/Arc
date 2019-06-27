@@ -2,11 +2,12 @@ package io.anuke.arc.collection;
 
 import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Select;
+import io.anuke.arc.util.*;
 import io.anuke.arc.util.reflect.ArrayReflection;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -118,13 +119,24 @@ public class Array<T> implements Iterable<T>{
 
     /** @see #Array(Object[]) */
     public static <T> Array<T> with(T... array){
-        return new Array(array);
+        return new Array<>(array);
     }
 
     public static <T> Array<T> with(Iterable<T> array){
         Array<T> out = new Array<>();
         for(T thing : array){
             out.add((T)thing);
+        }
+        return out;
+    }
+
+    /** @see #Array(Object[]) */
+    public static <T> Array<T> select(T[] array, Predicate<T> test){
+        Array<T> out = new Array<>(array.length);
+        for(int i = 0; i < array.length; i++){
+            if(test.test(array[i])){
+                out.add(array[i]);
+            }
         }
         return out;
     }
@@ -165,6 +177,15 @@ public class Array<T> implements Iterable<T>{
         return arr;
     }
 
+    /**Returns a new int array with the mapped values.*/
+    public IntArray mapInt(IntFunction<T> mapper){
+        IntArray arr = new IntArray(size);
+        for(int i = 0; i < size; i++){
+            arr.add(mapper.get(items[i]));
+        }
+        return arr;
+    }
+
     public <R> R reduce(R initial, BiFunction<T, R, R> reducer){
         R result = initial;
         for(int i = 0; i < size; i++){
@@ -175,6 +196,34 @@ public class Array<T> implements Iterable<T>{
 
     public boolean contains(Predicate<T> predicate){
         return find(predicate) != null;
+    }
+
+    public T min(FloatFunction<T> func){
+        T result = null;
+        float min = Float.MAX_VALUE;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            float val = func.get(t);
+            if(val <= min){
+                result = t;
+                min = val;
+            }
+        }
+        return result;
+    }
+
+    public T max(FloatFunction<T> func){
+        T result = null;
+        float max = Float.NEGATIVE_INFINITY;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            float val = func.get(t);
+            if(val >= max){
+                result = t;
+                max = val;
+            }
+        }
+        return result;
     }
 
     public T find(Predicate<T> predicate){
@@ -245,6 +294,12 @@ public class Array<T> implements Iterable<T>{
         for(T t : items){
             add(t);
         }
+    }
+
+    /** Sets this array's contents to the specified array.*/
+    public void set(Array<? extends T> array){
+        clear();
+        addAll(array);
     }
 
     public T get(int index){
@@ -347,6 +402,7 @@ public class Array<T> implements Iterable<T>{
         return removeValue(value, false);
     }
 
+    /** Removes a single value by predicate. */
     public boolean remove(Predicate<T> value){
         for(int i = 0; i < size; i++){
             if(value.test(items[i])){
@@ -709,16 +765,20 @@ public class Array<T> implements Iterable<T>{
         return buffer.toString();
     }
 
-    public String toString(String separator){
+    public String toString(String separator, Function<T, String> stringifier){
         if(size == 0) return "";
         T[] items = this.items;
         StringBuilder buffer = new StringBuilder(32);
-        buffer.append(items[0]);
+        buffer.append(stringifier.get(items[0]));
         for(int i = 1; i < size; i++){
             buffer.append(separator);
-            buffer.append(items[i]);
+            buffer.append(stringifier.get(items[i]));
         }
         return buffer.toString();
+    }
+
+    public String toString(String separator){
+        return toString(separator, String::valueOf);
     }
 
     public static class ArrayIterator<T> implements Iterator<T>, Iterable<T>{

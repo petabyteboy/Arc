@@ -25,6 +25,13 @@ public class AsyncExecutor implements Disposable{
         });
     }
 
+    public AsyncResult<Void> submit(Runnable run){
+        return submit(() -> {
+           run.run();
+           return null;
+        });
+    }
+
     /**
      * Submits a {@link Runnable} to be executed asynchronously. If maxConcurrent runnables are already running, the runnable will
      * be queued.

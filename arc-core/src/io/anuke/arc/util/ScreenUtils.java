@@ -17,7 +17,11 @@ import java.nio.ByteBuffer;
 public final class ScreenUtils{
 
     public static void saveScreenshot(FileHandle file){
-        Pixmap pixmap = getFrameBufferPixmap(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+        saveScreenshot(file, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+    }
+
+    public static void saveScreenshot(FileHandle file, int x, int y, int width, int height){
+        Pixmap pixmap = getFrameBufferPixmap(x, y, width, height, true);
         PixmapIO.writePNG(file, pixmap);
         pixmap.dispose();
     }
@@ -67,6 +71,13 @@ public final class ScreenUtils{
         ByteBuffer pixels = pixmap.getPixels();
         Core.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
 
+        return pixmap;
+    }
+
+    public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h, boolean flip){
+        byte[] lines = getFrameBufferPixels(x, y, w, h, flip);
+        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+        BufferUtils.copy(lines, 0, pixmap.getPixels(), lines.length);
         return pixmap;
     }
 

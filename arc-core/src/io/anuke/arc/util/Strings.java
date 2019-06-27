@@ -5,33 +5,37 @@ import java.nio.charset.Charset;
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
 
-    private static final int INVALID_INT = Integer.MIN_VALUE;
-    private static final float INVALID_FLOAT = Float.MIN_VALUE;
-
     public static String parseException(Throwable e, boolean stacktrace){
         StringBuilder build = new StringBuilder();
 
-        while(e.getCause() != null){
+        while(e != null){
+            String name = e.getClass().toString().substring("class ".length()).replace("Exception", "");
+            if(name.indexOf('.') != -1){
+                name = name.substring(name.lastIndexOf('.') + 1);
+            }
+
+            build.append(name);
+            if(e.getMessage() != null){
+                build.append(": ");
+                build.append(e.getMessage());
+            }
+
+            if(stacktrace){
+                for(StackTraceElement s : e.getStackTrace()){
+                    if(s.getClassName().contains("MethodAccessor") || s.getClassName().substring(s.getClassName().lastIndexOf(".") + 1).equals("Method")) continue;
+                    build.append("\n");
+
+                    String className = s.getClassName();
+                    build.append(className.substring(className.lastIndexOf(".") + 1)).append(".").append(s.getMethodName()).append(": ").append(s.getLineNumber());
+                }
+            }
+
+            build.append("\n");
+
             e = e.getCause();
         }
 
-        String name = e.getClass().toString().substring("class ".length()).replace("Exception", "");
-        if(name.indexOf('.') != -1){
-            name = name.substring(name.lastIndexOf('.') + 1);
-        }
 
-        build.append(name);
-        if(e.getMessage() != null){
-            build.append(": ");
-            build.append(e.getMessage());
-        }
-
-        if(stacktrace){
-            for(StackTraceElement s : e.getStackTrace()){
-                build.append("\n");
-                build.append(s.toString());
-            }
-        }
         return build.toString();
     }
 
