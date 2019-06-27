@@ -25,6 +25,6 @@ public class InflaterInputStream extends InputStream{
     @Override
     public void close() throws IOException{
         super.close();
-        StreamUtils.closeQuietly(in);
+        Streams.closeQuietly(in);
     }
 }

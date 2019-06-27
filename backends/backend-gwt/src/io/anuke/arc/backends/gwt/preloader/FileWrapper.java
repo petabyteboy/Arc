@@ -240,7 +240,7 @@ public class FileWrapper{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading layout file: " + this, ex);
         }finally{
-            StreamUtils.closeQuietly(reader);
+            Streams.closeQuietly(reader);
         }
         return output.toString();
     }
@@ -421,7 +421,7 @@ public class FileWrapper{
         }catch(Exception ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            StreamUtils.closeQuietly(writer);
+            Streams.closeQuietly(writer);
         }
     }
 

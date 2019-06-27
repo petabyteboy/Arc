@@ -4,7 +4,7 @@ import com.jcraft.jogg.*;
 import com.jcraft.jorbis.*;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Log;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -444,6 +444,6 @@ public class OggInputStream extends InputStream{
     }
 
     public void close(){
-        StreamUtils.closeQuietly(input);
+        Streams.closeQuietly(input);
     }
 }
