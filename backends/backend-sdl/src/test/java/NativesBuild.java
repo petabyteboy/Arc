@@ -12,7 +12,7 @@ class NativesBuild{
     static final String win32crossCompilePath = "/usr/local/cross-tools/i686-w64-mingw32/bin/";
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
-    static final String libsLinux = " -Wl,-Bstatic -l:libGLEW.a -l:libGLU.a -Wl,-Bdynamic -lGL -lopenal ";
+    static final String libsLinux = " -lGLEW -lGLU -lGL -lopenal ";
     static final String libsMac = " /usr/local/lib/libGLEW.a";
     static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lOpenAL32";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
@@ -37,31 +37,31 @@ class NativesBuild{
             BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 
             checkSDLVersion("sdl2-config", minSDLversion);
-            checkSDLVersion(win32crossCompilePath + "sdl2-config", minSDLversion);
-            checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
+            //checkSDLVersion(win32crossCompilePath + "sdl2-config", minSDLversion);
+            //checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
 
             lin64.cIncludes = new String[]{};
             lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
             lin64.cppFlags = lin64.cFlags;
             lin64.linkerFlags = "-shared -m64";
-            lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
+            lin64.libraries = execCmd("sdl2-config --libs") + libsLinux;
 
-            win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
-            win32.cppFlags = win32.cFlags;
-            win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + libsWin;
+            //win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
+            //win32.cppFlags = win32.cFlags;
+            //win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
-            win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
-            win64.cppFlags = win64.cFlags;
-            win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + libsWin;
+            //win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
+            //win64.cppFlags = win64.cFlags;
+            //win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
             new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
-            new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), win32, win64, lin64);
+            new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), lin64);
 
-            BuildExecutor.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-            BuildExecutor.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            //BuildExecutor.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            //BuildExecutor.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
             BuildExecutor.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-            exec("strip", "libs/windows32/sdl-arc.dll");
-            exec("strip", "libs/windows64/sdl-arc64.dll");
+            //exec("strip", "libs/windows32/sdl-arc.dll");
+            //exec("strip", "libs/windows64/sdl-arc64.dll");
             exec("strip", "libs/linux64/sdl-arc.so");
         }
     }
